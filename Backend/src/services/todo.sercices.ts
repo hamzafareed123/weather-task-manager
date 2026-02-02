@@ -3,6 +3,8 @@ import {
   createTodoInDB,
   deleteTodoInDB,
   findTodoById,
+  findTodoByUserId,
+  findAllTodos,
 } from "../repositories/todo.repositories";
 import { mapTodo } from "../utils/mapTodo";
 import { customError } from "../utils/customError";
@@ -90,4 +92,16 @@ export const shareTodoService = async (
   }
 
   return { message: "Todo shared successfully" };
+};
+
+export const fetchTodoService = async (userId: string): Promise<ITodo[]> => {
+  const todos = await findTodoByUserId(userId);
+  return todos.map(mapTodo);
+};
+
+export const fetchAllTodosServices = async (
+  userId: string,
+): Promise<ITodo[]> => {
+  const allTodos = await findAllTodos(userId);
+  return allTodos.map(mapTodo);
 };

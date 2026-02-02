@@ -15,3 +15,11 @@ export const createTodoInDB = async (todoData: {
 export const deleteTodoInDB = async (todoId: string) => {
   return await Todo.findByIdAndDelete(todoId);
 };
+
+export const findTodoByUserId = async (userId: string) => {
+  return await Todo.find({ "sharedWith.userId": userId });
+};
+
+export const findAllTodos = async (userId:string)=>{
+  return await Todo.find({userId}) ;
+}

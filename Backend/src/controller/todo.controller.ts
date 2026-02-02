@@ -4,6 +4,8 @@ import {
   createTodoService,
   deleteTodoService,
   shareTodoService,
+  fetchTodoService,
+  fetchAllTodosServices,
 } from "../services/todo.sercices";
 import { customError } from "../utils/customError";
 import { ERROR_MESSAGE } from "../constants/errorMessages";
@@ -89,6 +91,55 @@ export const shareTodo = async (
         ? (error as any).statusCode
         : 500;
 
+    OutputHandler(status, req, res, next);
+  }
+};
+
+export const getTodobyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id as string;
+
+    const todos = await fetchTodoService(userId);
+    (res as any).result = {
+      data: todos,
+      message: SUCCESS_MESSAGE.TODO_FETCHED,
+    };
+    OutputHandler(200, req, res, next);
+  } catch (error) {
+    (res as any).erorr = error;
+    const status =
+      error instanceof Error && "statusCode" in error
+        ? (error as any).statusCode
+        : 500;
+
+    OutputHandler(status, req, res, next);
+  }
+};
+
+export const getAllTodos = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id as string;
+    const allTodos = await fetchAllTodosServices(userId);
+
+    (res as any).result = {
+      data: allTodos,
+      message: SUCCESS_MESSAGE.TODO_FETCHED,
+    };
+    OutputHandler(200, req, res, next);
+  } catch (error) {
+    (res as any).error = error;
+    const status =
+      error instanceof Error && "statusCode" in error
+        ? (error as any).statusCode
+        : 500;
     OutputHandler(status, req, res, next);
   }
 };
