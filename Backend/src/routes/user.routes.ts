@@ -14,3 +14,4 @@ router.get("/getAuthUser",protectedRoute,getAuthUser);
 router.get("/getAllUsers",protectedRoute,roleMiddleware,getAllUsers)
 
 export default router;
+

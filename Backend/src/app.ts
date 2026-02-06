@@ -5,6 +5,7 @@ import todoRouter from "./routes/todo.routes"
 import { dbConnect } from "./config/db";
 import { OutputHandler } from "./middleware/outputHandler";
 import cookieParser from "cookie-parser";
+import cors from "cors"
 
 dbConnect();
 const app = express();
@@ -12,6 +13,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
+
+app.use(cors({
+  origin:ENV.CLIENT_URL,
+  credentials:true,
+}))
 
 app.use("/auth", userRouter);
 app.use("/todo",todoRouter);
