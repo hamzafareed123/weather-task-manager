@@ -27,3 +27,12 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.secondary {
+  background-color: transparent;
+  color: #6b7280; 
+}
+
+.secondary:hover {
+  background-color: rgba(41, 99, 116, 0.1);
+}

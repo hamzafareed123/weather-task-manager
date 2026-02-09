@@ -25,4 +25,9 @@ export const authApi = {
     const response = await axiosInstance.post("/auth/logout");
     return response.data;
   },
+
+  getAllUsers: async (): Promise<AuthResponse> => {
+    const response = await axiosInstance.get("/auth/getAllUsers");
+    return response.data;
+  },
 };

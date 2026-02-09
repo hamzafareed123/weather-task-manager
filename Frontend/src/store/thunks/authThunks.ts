@@ -49,9 +49,24 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await authApi.logout();
-        return {user:data.data}
+      return { user: data.data };
     } catch (error: any) {
       return rejectWithValue(error?.response?.data?.message || "Logout Failed");
+    }
+  },
+);
+
+export const getAllUsers = createAsyncThunk(
+  "auth/getAllUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await authApi.getAllUsers();
+
+      return data.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to fetch users",
+      );
     }
   },
 );

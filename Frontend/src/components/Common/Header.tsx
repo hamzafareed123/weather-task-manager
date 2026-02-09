@@ -16,8 +16,6 @@ const Header = ({ setSidebarOpen }: HeaderProps) => {
 
   const { user } = useAppSelector((state) => state.auth);
 
- 
-
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,7 +60,7 @@ const Header = ({ setSidebarOpen }: HeaderProps) => {
           </button>
 
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div className="absolute z-50 right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
               <button
                 onClick={() => {
                   navigate("/profile");

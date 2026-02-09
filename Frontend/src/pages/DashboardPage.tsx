@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../components/Common/Header";
 import Sidebar from "../components/Common/Sidebar";
 import TasksPage from "./TasksPage";
 import WeatherPage from "./WeatherPage";
 import TaskManagementPage from "./TaskManagementPage";
+import { useAppDispatch } from "../store/hooks/useAppDispatch";
+import { getAllUsers } from "../store/thunks/authThunks";
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState<string>("weather");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
 
   const renderActiveTabe = () => {
     switch (activeTab) {
@@ -43,7 +51,10 @@ const DashboardPage = () => {
           setIsOpen={setSidebarOpen}
         />
 
-        <main className="flex-1 overflow-auto">
+        <main
+          className="flex-1 overflow-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
           {renderActiveTabe()}
         </main>
       </div>

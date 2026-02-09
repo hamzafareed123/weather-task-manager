@@ -16,5 +16,6 @@ export interface authState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  
+  allUsers: User[];
+  userLoading:boolean;
 }

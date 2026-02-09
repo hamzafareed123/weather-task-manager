@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { checkAuthStatus } from "./store/thunks/authThunks";
 import LoadingBar from "./components/Common/LoadingBar";
 import WeatherPage from "./pages/WeatherPage";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { isLoading } = useAppSelector((state) => state.auth);
@@ -16,7 +17,7 @@ function App() {
 
   useEffect(() => {
     dispatch(checkAuthStatus());
-  }, [dispatch]);
+  }, []);
 
   if (isLoading) {
     return <LoadingBar />;
@@ -47,6 +48,8 @@ function App() {
         />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+
+      <Toaster />
     </>
   );
 }

@@ -1,4 +1,3 @@
-
 import { Cloud, CheckSquare } from "lucide-react";
 import { useAppSelector } from "../../store/hooks/useAppSelector";
 import type { User } from "../../types";
@@ -16,7 +15,6 @@ const Sidebar = ({
   isOpen,
   setIsOpen,
 }: SidebarProps) => {
-
   const { user } = useAppSelector((state) => state.auth);
 
   const handleTabClick = (tab: string) => {
@@ -63,7 +61,10 @@ const SidebarContent = ({
 
     <div className="mb-4">
       <button
-        onClick={() => handleTabClick("weather")}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleTabClick("weather");
+        }}
         className={`w-full flex items-center gap-3 p-3 rounded-lg font-semibold transition cursor-pointer
         ${activeTab === "weather" ? "bg-[#296374] text-gray-100" : "hover:text-gray-50 text-gray-400"}`}
       >

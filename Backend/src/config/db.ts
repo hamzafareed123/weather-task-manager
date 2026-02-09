@@ -4,9 +4,12 @@ import { ENV } from "./env";
 
 export const dbConnect=async()=>{
     try {
-        await mongoose.connect(ENV.MONGO_URL!)
-        console.log("Database Connected Successfully")
+        if (!ENV.MONGO_URL) {
+            throw new Error("MONGO_URL not set in environment variables");
+        }
+        await mongoose.connect(ENV.MONGO_URL)
+        console.log("✅ Database Connected Successfully")
     } catch (error) {
-        console.log("Error in connecting Database")        
+        console.error("❌ Error in connecting Database:", error)        
     }
 }
