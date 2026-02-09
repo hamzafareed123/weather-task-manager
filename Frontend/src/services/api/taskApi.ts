@@ -28,4 +28,11 @@ export const taskApi = {
 
     return response.data;
   },
+
+
+  getSharedTasks : async (): Promise<Task[]>=>{
+    const response = await axiosInstance.get("/todo/getTodobyUser");
+    
+    return response.data.data;
+  }
 };

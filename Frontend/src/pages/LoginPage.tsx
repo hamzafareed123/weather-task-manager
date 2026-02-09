@@ -6,14 +6,11 @@ import { useEffect } from "react";
 import { loginUser } from "../store/thunks/authThunks";
 
 const LoginPage = () => {
-
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isLoading, isAuthenticated, error } = useAppSelector(
     (state) => state.auth,
   );
-
-  console.log("error is ", error);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -22,14 +19,8 @@ const LoginPage = () => {
   }, [isAuthenticated, navigate]);
 
   const handleLogin = async (data: Record<string, string>) => {
-    const result = await dispatch(
-      loginUser({ email: data.email, password: data.password }),
-    );
-
-    console.log("result is ", result);
+    await dispatch(loginUser({ email: data.email, password: data.password }));
   };
-
-
 
   return (
     <>

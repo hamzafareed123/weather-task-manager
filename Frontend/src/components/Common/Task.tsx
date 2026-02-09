@@ -2,6 +2,7 @@ import type React from "react";
 
 type TaskProps = {
   id: string;
+  senderName?: string;
   todoName: string;
   description?: string;
   status: "pending" | "completed" | "canceled";
@@ -13,13 +14,13 @@ type TaskProps = {
 
 const Task = ({
   id,
+  senderName,
   todoName,
   description,
   status,
   deleteIcon,
   shareIcon,
   onDelete,
-  onShare,
 }: TaskProps) => {
   const statusColor = {
     pending: "bg-yellow-100 text-yellow-800",
@@ -37,8 +38,10 @@ const Task = ({
           {status.toUpperCase()}
         </span>
       </div>
+     
       {description && <p className="text-gray-600 text-sm">{description}</p>}
       <div className="flex justify-end mt-6 space-x-6">
+         {senderName && <p className="text-gray-600 text-sm">From: {senderName}</p>}
         {shareIcon && shareIcon}
         {deleteIcon && <div onClick={() => onDelete?.(id)}>{deleteIcon}</div>}
       </div>

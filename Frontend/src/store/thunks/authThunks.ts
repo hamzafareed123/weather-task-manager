@@ -31,7 +31,7 @@ export const checkAuthStatus = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await authApi.checkAuth();
-      console.log("data is ", data);
+    
       return { user: data.data };
     } catch (error: any) {
       if (error?.response?.status === 401) {

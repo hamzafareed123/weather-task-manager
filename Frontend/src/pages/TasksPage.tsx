@@ -1,7 +1,10 @@
+import UserTaskList from "../components/User/UserTaskList"
 
 const TasksPage = () => {
   return (
-    <div>TasksPage</div>
+    <div>
+      <UserTaskList/>
+    </div>
   )
 }
 

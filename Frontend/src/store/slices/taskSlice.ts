@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { taskState } from "../../types/task.types";
-import { deleteTask, getAllTasks, sendTasks, shareTask } from "../thunks/taskThunks";
+import {
+  deleteTask,
+  getAllTasks,
+  getSharedTaskts,
+  sendTasks,
+  shareTask,
+} from "../thunks/taskThunks";
 
 const initialState: taskState = {
   tasks: [],
@@ -54,39 +60,59 @@ const taskSlice = createSlice({
 
     // delete Task
 
+    builder
+      .addCase(deleteTask.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.tasks = state.tasks.filter(
+          (t) => (t as any).id !== action.meta.arg,
+        );
+      })
+
+      .addCase(deleteTask.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+
+    // share Task
 
     builder
-    .addCase(deleteTask.pending,(state)=>{
-      state.isLoading=true;
-      state.error=null;
-    })
+      .addCase(shareTask.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(shareTask.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(shareTask.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
 
-    .addCase(deleteTask.fulfilled,(state,action)=>{
-      state.isLoading=false;
-      state.error=null;
-      state.tasks = state.tasks.filter((t) => (t as any).id !== action.meta.arg);
-    })
+    //get shared tasks
 
-    .addCase(deleteTask.rejected,(state,action)=>{
-      state.isLoading=false;
-      state.error=action.payload as string;
-    })
+    builder
+      .addCase(getSharedTaskts.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
 
-    // share Task 
+      .addCase(getSharedTaskts.fulfilled, (state, action) => {
+        state.tasks = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      })
 
-    builder 
-    .addCase(shareTask.pending,(state)=>{
-      state.isLoading=true;
-      state.error=null;
-    })
-    .addCase(shareTask.fulfilled,(state)=>{
-      state.isLoading=false;
-      state.error=null;
-    })
-    .addCase(shareTask.rejected,(state,action)=>{
-      state.isLoading=false;
-      state.error=action.payload as string;
-    })
+      .addCase(getSharedTaskts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
