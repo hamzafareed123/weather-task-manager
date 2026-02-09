@@ -17,9 +17,12 @@ export const deleteTodoInDB = async (todoId: string) => {
 };
 
 export const findTodoByUserId = async (userId: string) => {
-  return await Todo.find({ "sharedWith.userId": userId });
+  return await Todo.find({ "sharedWith.userId": userId }).populate(
+    "userId",
+    "fullName email",
+  );
 };
 
-export const findAllTodos = async (userId:string)=>{
-  return await Todo.find({userId}) ;
-}
+export const findAllTodos = async (userId: string) => {
+  return await Todo.find({ userId });
+};

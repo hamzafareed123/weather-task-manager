@@ -104,6 +104,7 @@ export const getTodobyUser = async (
     const userId = req.user?.id as string;
 
     const todos = await fetchTodoService(userId);
+
     (res as any).result = {
       data: todos,
       message: SUCCESS_MESSAGE.TODO_FETCHED,
