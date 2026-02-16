@@ -9,7 +9,4 @@ export const ERROR_MESSAGE = {
   ADMIN_ACCESS: "Unauthorized Only Admin can access",
   FORBIDDEN: "Forbidden",
   USERID_NOT_FOUND: "User Id not Found",
-  TODO_NOT_FOUND: "Todo not found",
-  CANNOT_MESSAGE_YOURSELF: "Cannot send message to yourself",
-  TODO_ALREADY_SHARED:"Todo alreay Shared to this User"
 };

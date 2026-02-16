@@ -1,7 +1,6 @@
 import express from "express";
 import { ENV } from "./config/env";
 import userRouter from "./routes/user.routes";
-import todoRouter from "./routes/todo.routes"
 import { dbConnect } from "./config/db";
 import { OutputHandler } from "./middleware/outputHandler";
 import cookieParser from "cookie-parser";
@@ -20,7 +19,7 @@ app.use(cors({
 }))
 
 app.use("/auth", userRouter);
-app.use("/todo",todoRouter);
+
 
 app.use((error: any, req: any, res: any, next: any) => {
   (res as any).error = error;
