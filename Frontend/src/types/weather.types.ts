@@ -1,7 +1,3 @@
-import type { weatherResponse } from "./api.types";
-
-
-
 export interface Weather {
   name: string;
   weather: {

@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: weather-backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    networks:
+      - weather-network
+
+  frontend:
+    build: ./frontend
+    container_name: weather-frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:80"  # map host 3000 to nginx inside container
+    depends_on:
+      - backend
+    networks:
+      - weather-network
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - weather-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_URL: mongodb://admin:secret@mongo:27017/admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    networks:
+      - weather-network
+
+volumes:
+  mongo_data:
+
+networks:
+  weather-network:
