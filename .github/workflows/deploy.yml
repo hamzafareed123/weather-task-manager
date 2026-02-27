@@ -17,8 +17,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image
-        run: docker build . -t hamzafareed123/weather-task-manger2:latest
+      - name: Build and push Backend
+        run: |
+          docker build ./Backend -t hamzafareed123/weather-task-manager-backend:latest
+          docker push hamzafareed123/weather-task-manager-backend:latest
 
-      - name: Push image
-        run: docker push hamzafareed123/weather-task-manger2:latest
+      - name: Build and push Frontend
+        run: |
+          docker build ./Frontend -t hamzafareed123/weather-task-manager-frontend:latest
+          docker push hamzafareed123/weather-task-manager-frontend:latest
