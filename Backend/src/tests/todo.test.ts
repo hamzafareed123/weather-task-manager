@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../app";
 import { User } from "../models/User";
-import mongoose from "mongoose";
+;
 
 describe("Todos", () => {
 
@@ -9,9 +9,9 @@ describe("Todos", () => {
   let adminCookie: string;
 
   beforeEach(async () => {
-    await mongoose.connection.dropDatabase();
+    
 
-    // ─── REGULAR USER ─────────────────────
+    
     await request(app)
       .post("/auth/signup")
       .send({
@@ -56,10 +56,7 @@ describe("Todos", () => {
     if (!userCookie) throw new Error("User login failed - userCookie is undefined");
   });
 
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-  });
+
 
   // ─── CREATE TODO ─────────────────────────
   describe("POST /todo/createTodo", () => {
