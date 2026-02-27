@@ -1,7 +1,15 @@
 import request from "supertest";
 import app from "../app";
+import mongoose from "mongoose";
 
 describe("Auth", () => {
+
+  beforeEach(async () => {
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+      await collections[key].deleteMany({});
+    }
+  });
 
   // ─── SIGNUP ───────────────────────────────
   describe("POST /auth/signup", () => {
@@ -22,7 +30,6 @@ describe("Auth", () => {
     });
 
     test("should not register with duplicate email", async () => {
-      // register once
       await request(app)
         .post("/auth/signup")
         .send({
@@ -31,7 +38,6 @@ describe("Auth", () => {
           password: "123456"
         });
 
-      // try again with same email
       const res = await request(app)
         .post("/auth/signup")
         .send({
@@ -40,7 +46,7 @@ describe("Auth", () => {
           password: "123456"
         });
 
-      expect(res.status).toBe(409); // 409 conflict not 400
+      expect(res.status).toBe(409);
       expect(res.body.success).toBe(false);
     });
 
@@ -129,7 +135,7 @@ describe("Auth", () => {
           password: "123456"
         });
 
-      expect(res.status).toBe(401); // 401 because service throws INVALID_CREDENTIALS for missing user too
+      expect(res.status).toBe(401);
       expect(res.body.success).toBe(false);
     });
 
