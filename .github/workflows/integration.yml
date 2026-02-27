@@ -12,6 +12,21 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+
+    #  mongodb service
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+
+    env:
+      PORT: ${{ secrets.PORT }}
+      MONGO_URL: ${{ secrets.MONGO_URL }}
+      MONGO_TEST_URI: ${{ secrets.MONGO_TEST_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      CLIENT_URL: ${{ secrets.CLIENT_URL }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -20,7 +35,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: ./Backend/package-lock.json  #  added
+          cache-dependency-path: ./Backend/package-lock.json
 
       - name: Install Backend Dependencies
         working-directory: ./Backend
@@ -39,6 +54,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -47,7 +63,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: ./Frontend/package-lock.json  # 👈 added
+          cache-dependency-path: ./Frontend/package-lock.json
 
       - name: Install Frontend Dependencies
         working-directory: ./Frontend
