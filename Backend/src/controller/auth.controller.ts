@@ -9,6 +9,7 @@ import { SUCCESS_MESSAGE } from "../constants/successMessages";
 import { OutputHandler } from "../middleware/outputHandler";
 import { customError } from "../utils/customError";
 import { ERROR_MESSAGE } from "../constants/errorMessages";
+import { STATUS_CODE } from "../constants/statusCode";
 
 export const SignUp = async (
   req: Request,
@@ -21,13 +22,13 @@ export const SignUp = async (
     const user = await signUpUser(body, res);
     (res as any).result = { data: user, message: SUCCESS_MESSAGE.USER_CREATED };
 
-    OutputHandler(201, req, res, next);
+    OutputHandler(STATUS_CODE.CREATED, req, res, next);
   } catch (error) {
     (res as any).error = error;
     const status =
       error instanceof Error && "statusCode" in error
         ? (error as any).statusCode
-        : 500;
+        : STATUS_CODE.INTERNAL_SERVER_ERROR;
 
     OutputHandler(status, req, res, next);
   }
@@ -48,13 +49,13 @@ export const SignIn = async (
       message: SUCCESS_MESSAGE.LOGIN_SUCCESSFUL,
     };
 
-    OutputHandler(200, req, res, next);
+    OutputHandler(STATUS_CODE.OK, req, res, next);
   } catch (error) {
     (res as any).error = error;
     const status =
       error instanceof Error && "statusCode" in error
         ? (error as any).statusCode
-        : 500;
+        : STATUS_CODE.INTERNAL_SERVER_ERROR;
 
     OutputHandler(status, req, res, next);
   }
