@@ -1,6 +1,7 @@
 import request from "supertest";
 import app from "../app";
 import { User } from "../models/User";
+import mongoose from "mongoose";
 
 describe("Todos", () => {
 
@@ -8,6 +9,7 @@ describe("Todos", () => {
   let adminCookie: string;
 
   beforeEach(async () => {
+    await mongoose.connection.dropDatabase();
 
     // ─── REGULAR USER ─────────────────────
     await request(app)
@@ -36,13 +38,11 @@ describe("Todos", () => {
         password: "123456"
       });
 
-    // update role BEFORE login so JWT has admin role
     await User.findOneAndUpdate(
       { email: "admin@test.com" },
       { role: "admin" }
     );
 
-    // login AFTER role update
     const adminLogin = await request(app)
       .post("/auth/signin")
       .send({
@@ -51,6 +51,14 @@ describe("Todos", () => {
       });
 
     adminCookie = adminLogin.headers["set-cookie"]?.[0];
+
+    if (!adminCookie) throw new Error("Admin login failed - adminCookie is undefined");
+    if (!userCookie) throw new Error("User login failed - userCookie is undefined");
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
   });
 
   // ─── CREATE TODO ─────────────────────────
@@ -189,7 +197,7 @@ describe("Todos", () => {
           description: "Will be deleted"
         });
 
-      const id = created.body.data.id; // ✅ id not _id
+      const id = created.body.data.id;
 
       const res = await request(app)
         .delete(`/todo/deleteTodo/${id}`)
@@ -217,7 +225,6 @@ describe("Todos", () => {
     });
 
     test("admin should not delete another admin's todo", async () => {
-      // create second admin
       await request(app)
         .post("/auth/signup")
         .send({
@@ -231,7 +238,6 @@ describe("Todos", () => {
         { role: "admin" }
       );
 
-      // login AFTER role update
       const admin2Login = await request(app)
         .post("/auth/signin")
         .send({
@@ -239,9 +245,8 @@ describe("Todos", () => {
           password: "123456"
         });
 
-      const admin2Cookie = admin2Login.headers["set-cookie"]?.[0]; // ✅
+      const admin2Cookie = admin2Login.headers["set-cookie"]?.[0];
 
-      // create todo with admin1
       const created = await request(app)
         .post("/todo/createTodo")
         .set("Cookie", adminCookie)
@@ -250,9 +255,8 @@ describe("Todos", () => {
           description: "Belongs to admin1"
         });
 
-      const id = created.body.data.id; // ✅ id not _id
+      const id = created.body.data.id;
 
-      // try to delete with admin2
       const res = await request(app)
         .delete(`/todo/deleteTodo/${id}`)
         .set("Cookie", admin2Cookie);
@@ -275,7 +279,7 @@ describe("Todos", () => {
           description: "This will be shared"
         });
 
-      const id = created.body.data.id; // ✅ id not _id
+      const id = created.body.data.id;
 
       const res = await request(app)
         .post(`/todo/shareTodo/${id}`)
@@ -297,15 +301,13 @@ describe("Todos", () => {
           description: "This will be shared"
         });
 
-      const id = created.body.data.id; // ✅ id not _id
+      const id = created.body.data.id;
 
-      // share once
       await request(app)
         .post(`/todo/shareTodo/${id}`)
         .set("Cookie", adminCookie)
         .send({ emails: ["user@test.com"] });
 
-      // share again with same user
       const res = await request(app)
         .post(`/todo/shareTodo/${id}`)
         .set("Cookie", adminCookie)
