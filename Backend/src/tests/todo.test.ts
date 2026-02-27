@@ -1,13 +1,27 @@
 import request from "supertest";
 import app from "../app";
 import { User } from "../models/User";
+import mongoose from "mongoose";
+import { ENV } from "../config/env";
 
 describe("Todos", () => {
 
   let userCookie: string;
   let adminCookie: string;
 
+  // ✅ Connect once before all tests
+  beforeAll(async () => {
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(ENV.MONGO_TEST_URI);
+    }
+  });
+
   beforeEach(async () => {
+    // ✅ Clean all collections before each test
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+      await collections[key].deleteMany({});
+    }
 
     // ─── REGULAR USER ─────────────────────
     await request(app)
@@ -238,7 +252,6 @@ describe("Todos", () => {
           password: "123456"
         });
 
-      // ✅ split here too
       const admin2Cookie = admin2Login.headers["set-cookie"]?.[0].split(";")[0];
 
       const created = await request(app)

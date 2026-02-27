@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 import { ENV } from "../config/env";
 
+
+
+
+
+
 beforeAll(async () => {
-  await mongoose.connect(ENV.MONGO_TEST_URI);
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(ENV.MONGO_TEST_URI);
+  }
 });
 
 afterAll(async () => {
