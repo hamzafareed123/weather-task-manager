@@ -10,16 +10,13 @@ describe("Todos", () => {
   beforeEach(async () => {
 
     // ─── REGULAR USER ─────────────────────
-    const userSignup = await request(app)
+    await request(app)
       .post("/auth/signup")
       .send({
         fullName: "Regular User",
         email: "user@test.com",
         password: "123456"
       });
-
-    console.log("userSignup status:", userSignup.status);
-    console.log("userSignup body:", userSignup.body);
 
     const userLogin = await request(app)
       .post("/auth/signin")
@@ -28,23 +25,16 @@ describe("Todos", () => {
         password: "123456"
       });
 
-    console.log("userLogin status:", userLogin.status);
-    console.log("userLogin body:", userLogin.body);
-    console.log("userLogin cookie:", userLogin.headers["set-cookie"]);
-
-    userCookie = userLogin.headers["set-cookie"]?.[0];
+    userCookie = userLogin.headers["set-cookie"]?.[0].split(";")[0];
 
     // ─── ADMIN USER ───────────────────────
-    const adminSignup = await request(app)
+    await request(app)
       .post("/auth/signup")
       .send({
         fullName: "Admin User",
         email: "admin@test.com",
         password: "123456"
       });
-
-    console.log("adminSignup status:", adminSignup.status);
-    console.log("adminSignup body:", adminSignup.body);
 
     await User.findOneAndUpdate(
       { email: "admin@test.com" },
@@ -58,11 +48,7 @@ describe("Todos", () => {
         password: "123456"
       });
 
-    console.log("adminLogin status:", adminLogin.status);
-    console.log("adminLogin body:", adminLogin.body);
-    console.log("adminLogin cookie:", adminLogin.headers["set-cookie"]);
-
-    adminCookie = adminLogin.headers["set-cookie"]?.[0];
+    adminCookie = adminLogin.headers["set-cookie"]?.[0].split(";")[0];
 
     if (!adminCookie) throw new Error("Admin login failed - adminCookie is undefined");
     if (!userCookie) throw new Error("User login failed - userCookie is undefined");
@@ -252,7 +238,8 @@ describe("Todos", () => {
           password: "123456"
         });
 
-      const admin2Cookie = admin2Login.headers["set-cookie"]?.[0];
+      // ✅ split here too
+      const admin2Cookie = admin2Login.headers["set-cookie"]?.[0].split(";")[0];
 
       const created = await request(app)
         .post("/todo/createTodo")
