@@ -5,7 +5,7 @@ services:
     build: ./backend
     container_name: weather-backend
     env_file:
-      - ./backend/.env
+      - ./backend/.env.docker
     ports:
       - "8000:8000"
     depends_on:
