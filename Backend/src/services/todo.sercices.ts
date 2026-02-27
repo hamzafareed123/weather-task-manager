@@ -10,6 +10,7 @@ import { mapTodo } from "../utils/mapTodo";
 import { customError } from "../utils/customError";
 import { ERROR_MESSAGE } from "../constants/errorMessages";
 import { findUserByEmails } from "../repositories/user.repositories";
+import mongoose from "mongoose";
 
 export const createTodoService = async (
   userId: string,
@@ -30,6 +31,10 @@ export const deleteTodoService = async (userId: string, todoId: string) => {
   if (!userId) {
     throw new customError(ERROR_MESSAGE.USERID_NOT_FOUND);
   }
+
+  if (!mongoose.Types.ObjectId.isValid(todoId)) {
+    throw new customError(ERROR_MESSAGE.TODO_NOT_FOUND, 404);
+  }
   const todo = await findTodoById(todoId);
 
   if (!todo) {
@@ -49,6 +54,9 @@ export const shareTodoService = async (
   todoId: string,
   emails: string[],
 ) => {
+  if (!mongoose.Types.ObjectId.isValid(todoId)) {
+    throw new customError(ERROR_MESSAGE.TODO_NOT_FOUND, 404);
+  }
   const todo = await findTodoById(todoId);
   if (!todo) {
     throw new customError(ERROR_MESSAGE.TODO_NOT_FOUND, 404);

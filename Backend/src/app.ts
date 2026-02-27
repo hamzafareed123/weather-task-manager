@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors"
 
 dbConnect();
-const app = express();
+ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,6 +34,9 @@ app.use((error: any, req: any, res: any, next: any) => {
 
   OutputHandler(status, req, res, next);
 });
+
+export default app;
+
 app.listen(ENV.PORT, () => {
   console.log("Sever Running on Port", ENV.PORT);
 });
