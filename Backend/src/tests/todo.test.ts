@@ -1,7 +1,6 @@
 import request from "supertest";
 import app from "../app";
 import { User } from "../models/User";
-;
 
 describe("Todos", () => {
 
@@ -9,16 +8,18 @@ describe("Todos", () => {
   let adminCookie: string;
 
   beforeEach(async () => {
-    
 
-    
-    await request(app)
+    // ─── REGULAR USER ─────────────────────
+    const userSignup = await request(app)
       .post("/auth/signup")
       .send({
         fullName: "Regular User",
         email: "user@test.com",
         password: "123456"
       });
+
+    console.log("userSignup status:", userSignup.status);
+    console.log("userSignup body:", userSignup.body);
 
     const userLogin = await request(app)
       .post("/auth/signin")
@@ -27,16 +28,23 @@ describe("Todos", () => {
         password: "123456"
       });
 
+    console.log("userLogin status:", userLogin.status);
+    console.log("userLogin body:", userLogin.body);
+    console.log("userLogin cookie:", userLogin.headers["set-cookie"]);
+
     userCookie = userLogin.headers["set-cookie"]?.[0];
 
     // ─── ADMIN USER ───────────────────────
-    await request(app)
+    const adminSignup = await request(app)
       .post("/auth/signup")
       .send({
         fullName: "Admin User",
         email: "admin@test.com",
         password: "123456"
       });
+
+    console.log("adminSignup status:", adminSignup.status);
+    console.log("adminSignup body:", adminSignup.body);
 
     await User.findOneAndUpdate(
       { email: "admin@test.com" },
@@ -50,13 +58,15 @@ describe("Todos", () => {
         password: "123456"
       });
 
+    console.log("adminLogin status:", adminLogin.status);
+    console.log("adminLogin body:", adminLogin.body);
+    console.log("adminLogin cookie:", adminLogin.headers["set-cookie"]);
+
     adminCookie = adminLogin.headers["set-cookie"]?.[0];
 
     if (!adminCookie) throw new Error("Admin login failed - adminCookie is undefined");
     if (!userCookie) throw new Error("User login failed - userCookie is undefined");
   });
-
-
 
   // ─── CREATE TODO ─────────────────────────
   describe("POST /todo/createTodo", () => {
